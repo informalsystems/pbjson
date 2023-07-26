@@ -39,7 +39,7 @@ macro_rules! ser_bytes_value {
 
                 let value =
                     pbjson::private::base64::engine::general_purpose::STANDARD.encode(&self.value);
-        
+
                 value.serialize(ser)
             }
         }
