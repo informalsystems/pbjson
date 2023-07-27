@@ -7,9 +7,12 @@ impl TryFrom<Timestamp> for chrono::DateTime<Utc> {
     type Error = core::num::TryFromIntError;
     fn try_from(value: Timestamp) -> Result<Self, Self::Error> {
         let Timestamp { seconds, nanos } = value;
+        let dt = NaiveDateTime::from_timestamp_opt(seconds, nanos.try_into()?);
 
-        let dt = NaiveDateTime::from_timestamp(seconds, nanos.try_into()?);
-        Ok(Self::from_utc(dt, Utc))
+        Ok(Self::from_utc(
+            dt.expect("invalid or out-of-range datetime"),
+            Utc,
+        ))
     }
 }
 
@@ -69,9 +72,10 @@ mod tests {
 
     #[test]
     fn test_date() {
-        let datetime = FixedOffset::east(5 * 3600)
-            .ymd(2016, 11, 8)
-            .and_hms(21, 7, 9);
+        let datetime = FixedOffset::east_opt(5 * 3600)
+            .unwrap()
+            .with_ymd_and_hms(2016, 11, 8, 21, 7, 9)
+            .unwrap();
         let encoded = datetime.to_rfc3339();
         assert_eq!(&encoded, "2016-11-08T21:07:09+05:00");
 

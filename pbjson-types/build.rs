@@ -16,14 +16,14 @@ fn main() -> Result<()> {
     config
         .file_descriptor_set_path(&descriptor_path)
         .compile_well_known_types()
-        .disable_comments(&["."])
-        .bytes(&[".google"])
+        .disable_comments(["."])
+        .bytes([".google"])
         .skip_protoc_run();
 
     let std = std::env::var("CARGO_FEATURE_STD").map_or(false, |_| true);
 
     if !std {
-        config.btree_map(&[".google"]);
+        config.btree_map([".google"]);
     }
 
     let empty: &[&str] = &[];
