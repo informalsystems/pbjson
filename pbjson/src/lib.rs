@@ -29,7 +29,6 @@ pub mod private {
     use alloc::str::FromStr;
     use alloc::vec::Vec;
 
-    use base64::Engine;
     use serde::de::Visitor;
     use serde::Deserialize;
 
@@ -75,8 +74,7 @@ pub mod private {
         where
             E: serde::de::Error,
         {
-            let decoded = base64::engine::general_purpose::STANDARD
-                .decode(s)
+            let decoded = base64::decode_config(s, base64::STANDARD)
                 .or_else(|e| match e {
                     // Either standard or URL-safe base64 encoding are accepted
                     //
@@ -85,7 +83,7 @@ pub mod private {
                     // Therefore if we error out on those characters, try again with
                     // the URL-safe character set
                     base64::DecodeError::InvalidByte(_, c) if c == b'-' || c == b'_' => {
-                        base64::engine::general_purpose::URL_SAFE.decode(s)
+                        base64::decode_config(s, base64::URL_SAFE)
                     }
                     _ => Err(e),
                 })
@@ -124,12 +122,12 @@ pub mod private {
                 let raw: Vec<_> = core::iter::from_fn(|| Some(rng.gen())).take(len).collect();
 
                 for config in [
-                    base64::engine::general_purpose::STANDARD,
-                    base64::engine::general_purpose::STANDARD_NO_PAD,
-                    base64::engine::general_purpose::URL_SAFE,
-                    base64::engine::general_purpose::URL_SAFE_NO_PAD,
+                    base64::STANDARD,
+                    base64::STANDARD_NO_PAD,
+                    base64::URL_SAFE,
+                    base64::URL_SAFE_NO_PAD,
                 ] {
-                    let encoded = config.encode(&raw);
+                    let encoded = base64::encode_config(&raw, config);
 
                     let deserializer = BorrowedStrDeserializer::<'_, Error>::new(&encoded);
                     let a: Bytes = BytesDeserialize::deserialize(deserializer).unwrap().0;
