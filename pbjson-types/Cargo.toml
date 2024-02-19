@@ -10,15 +10,19 @@ categories = ["encoding"]
 repository = "https://github.com/influxdata/pbjson"
 exclude = ["protos/*"]
 
+[features]
+default = ["std"]
+std = ["bytes/std", "chrono/std", "pbjson/std", "prost/std", "serde/std", "serde_json/std"]
+
 [dependencies] # In alphabetical order
-bytes = "1.0"
+bytes = { version = "1.0", default-features = false }
 chrono = { version = "0.4", default-features = false, features = ["alloc"] }
-pbjson = { path = "../pbjson", version = "0.6" }
-prost = "0.12"
-serde = { version = "1.0", features = ["derive"] }
+prost = { version = "0.12", default-features = false, features = ["prost-derive"] }
+serde = { version = "1.0", features = ["derive"], default-features = false }
+pbjson = { path = "../pbjson", version = "0.6", default-features = false }
 
 [dev-dependencies]
-serde_json = "1.0"
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 
 [build-dependencies] # In alphabetical order
 prost-build = "0.12"

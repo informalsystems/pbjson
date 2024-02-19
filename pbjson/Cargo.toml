@@ -9,10 +9,13 @@ keywords = ["protobuf", "json", "serde"]
 categories = ["encoding"]
 repository = "https://github.com/influxdata/pbjson"
 
-[dependencies]
+[features]
+default = ["std"]
+std = ["serde/std", "base64/std"]
 
-serde = { version = "1.0", features = ["derive"] }
-base64 = "0.21"
+[dependencies]
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+base64 = { version = "0.21", default-features = false, features = ["alloc"] }
 
 [dev-dependencies]
 bytes = "1.0"

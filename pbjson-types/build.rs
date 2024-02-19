@@ -18,6 +18,12 @@ fn main() -> Result<()> {
         .bytes([".google"])
         .skip_protoc_run();
 
+    let std = std::env::var("CARGO_FEATURE_STD").map_or(false, |_| true);
+
+    if !std {
+        config.btree_map([".google"]);
+    }
+
     let empty: &[&str] = &[];
     config.compile_protos(empty, empty)?;
 

@@ -6,4 +6,8 @@ members = [
     "pbjson-types",
 ]
 
+exclude = [
+  "pbjson-no-std"
+]
+
 resolver = "2"
